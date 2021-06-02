@@ -3,11 +3,15 @@
 ;; Copyright (c) 2010-2021 Free Software Foundation, Inc.
 ;;
 ;; Author: Anthony Lander <anthony.lander@gmail.com>
-;;      John Wiegley <johnw@gnu.org>
-;;      Christopher Suckling <suckling at gmail dot com>
-;;      Daniil Frumin <difrumin@gmail.com>
-;;      Alan Schmitt <alan.schmitt@polytechnique.org>
-;;      Mike McLean <mike.mclean@pobox.com>
+;;         John Wiegley <johnw@gnu.org>
+;;         Christopher Suckling <suckling at gmail dot com>
+;;         Daniil Frumin <difrumin@gmail.com>
+;;         Alan Schmitt <alan.schmitt@polytechnique.org>
+;;         Mike McLean <mike.mclean@pobox.com>
+;; Version: 1.6
+;; Keywords: url, org
+;; Maintainer: Aimé Bertrand <aime.bertrand@macowners.club>
+;; Homepage: https://gitlab.com/aimebertrand/org-mac-link
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -80,9 +84,13 @@
 ;;
 ;; Installation:
 ;;
-;; add (require 'org-mac-link) to your .emacs, and optionally bind a
-;; key to activate the link grabber menu, like this:
+;; Add (require 'org-mac-link) to your `.emacs' or `init.el'.
 ;;
+;; If you are using `use-package' add the following:
+;; (use-package org-mac-link
+;;   :ensure t)
+;;
+;; Optionally bind a key to activate the link grabber menu, like this:
 ;; (add-hook 'org-mode-hook (lambda ()
 ;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
 ;;
