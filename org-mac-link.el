@@ -8,8 +8,9 @@
 ;;         Daniil Frumin <difrumin@gmail.com>
 ;;         Alan Schmitt <alan.schmitt@polytechnique.org>
 ;;         Mike McLean <mike.mclean@pobox.com>
-;; Version: 1.6
-;; Keywords: url, org
+;; Version: 1.7
+;; Keywords: files, wp, url, org
+;; Package-Requires: ((emacs "27.1"))
 ;; Maintainer: Aimé Bertrand <aime.bertrand@macowners.club>
 ;; Homepage: https://gitlab.com/aimebertrand/org-mac-link
 ;;
@@ -38,7 +39,7 @@
 ;;
 ;; Version: 1.3
 ;; Author: Alan Schmitt <alan.schmitt@polytechnique.org>
-;; Consistently use `org-mac-paste-applescript-links'
+;; Consistently use `org-mac-link-paste-applescript-links'
 ;;
 ;; Version 1.4
 ;; Author: Mike McLean <mike.mclean@pobox.com>
@@ -51,6 +52,10 @@
 ;; Version 1.6
 ;; Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
 ;; Add Support for qutebrowser
+;;
+;; Version 1.7
+;; Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
+;; Consistently use the package prefix in symbols
 ;;
 ;;; Commentary:
 ;;
@@ -92,12 +97,12 @@
 ;;
 ;; Optionally bind a key to activate the link grabber menu, like this:
 ;; (add-hook 'org-mode-hook (lambda ()
-;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-grab-link)))
+;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-link-link)))
 ;;
 ;; Usage:
 ;;
 ;; Type C-c g (or whatever key you defined, as above), or type M-x
-;; org-mac-grab-link RET to activate the link grabber.  This will present
+;; org-mac-link-link RET to activate the link grabber.  This will present
 ;; you with a menu to choose an application from which to grab a link
 ;; to insert at point.  You may also type C-g to abort.
 ;;
@@ -117,79 +122,79 @@
   :tag "Org Mac link"
   :group 'org-link)
 
-(defcustom org-mac-grab-Finder-app-p t
+(defcustom org-mac-link-finder-app-p t
   "Add menu option [F]inder to grab links from the Finder."
   :tag "Grab Finder.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Mail-app-p t
+(defcustom org-mac-link-mail-app-p t
   "Add menu option [m]ail to grab links from Mail.app."
   :tag "Grab Mail.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Outlook-app-p t
+(defcustom org-mac-link-outlook-app-p t
   "Add menu option [o]utlook to grab links from Microsoft Outlook.app."
   :tag "Grab Microsoft Outlook.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-outlook-path "/Applications/Microsoft Outlook.app"
+(defcustom org-mac-link-outlook-path "/Applications/Microsoft Outlook.app"
   "The path to the installed copy of Microsoft Outlook.app. Do not escape spaces as the AppleScript call will quote this string."
   :tag "Path to Microsoft Outlook"
   :group 'org-mac-link
   :type 'string)
 
-(defcustom org-mac-grab-devonthink-app-p t
+(defcustom org-mac-link-devonthink-app-p t
   "Add menu option [d]EVONthink to grab links from DEVONthink Pro Office.app."
   :tag "Grab DEVONthink Pro Office.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Addressbook-app-p t
+(defcustom org-mac-link-addressbook-app-p t
   "Add menu option [a]ddressbook to grab links from AddressBook.app."
   :tag "Grab AddressBook.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Safari-app-p t
+(defcustom org-mac-link-safari-app-p t
   "Add menu option [s]afari to grab links from Safari.app."
   :tag "Grab Safari.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Firefox-app-p t
+(defcustom org-mac-link-firefox-app-p t
   "Add menu option [f]irefox to grab links from Firefox.app."
   :tag "Grab Firefox.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Firefox+Vimperator-p nil
+(defcustom org-mac-link-firefox-vimperator-p nil
   "Add menu option [v]imperator to grab links from Firefox.app running the Vimperator plugin."
   :tag "Grab Vimperator/Firefox.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Chrome-app-p t
+(defcustom org-mac-link-chrome-app-p t
   "Add menu option [c]hrome to grab links from Google Chrome.app."
   :tag "Grab Google Chrome.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Brave-app-p t
+(defcustom org-mac-link-brave-app-p t
   "Add menu option [b]rave to grab links from Brave.app."
   :tag "Grab Brave.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Together-app-p nil
+(defcustom org-mac-link-together-app-p nil
   "Add menu option [t]ogether to grab links from Together.app."
   :tag "Grab Together.app links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Skim-app-p
+(defcustom org-mac-link-skim-app-p
   (< 0 (length (shell-command-to-string
                 "mdfind kMDItemCFBundleIdentifier == 'net.sourceforge.skim-app.skim'")))
   "Add menu option [S]kim to grab page links from Skim.app."
@@ -197,41 +202,37 @@
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-Skim-highlight-selection-p nil
+(defcustom org-mac-link-highlight-selection-p nil
   "Highlight the active selection when grabbing a link from Skim.app."
   :tag "Highlight selection in Skim.app"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-grab-Acrobat-app-p t
+(defcustom org-mac-link-acrobat-app-p t
   "Add menu option [A]crobat to grab page links from Acrobat.app."
   :tag "Grab Acrobat.app page links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defgroup org-mac-flagged-mail nil
-  "Options foring linking to flagged Mail.app messages."
-  :tag "Org Mail.app"
-  :group 'org-link)
-
-(defcustom org-mac-mail-account nil
+(defcustom org-mac-link-mail-account nil
   "The Mail.app account in which to search for flagged messages."
-  :group 'org-mac-flagged-mail
+  :tag "Org Mail.app Account"
+  :group 'org-mac-link
   :type 'string)
 
-(defcustom org-mac-grab-Evernote-app-p nil
+(defcustom org-mac-link-evernote-app-p nil
   "Add menu option [e]vernote to grab note links from Evernote.app."
   :tag "Grab Evernote.app note links"
   :group 'org-mac-link
   :type 'boolean)
 
-(defcustom org-mac-evernote-path nil
+(defcustom org-mac-link-evernote-path nil
   "The path to the installed copy of Evernote.app. Do not escape spaces as the AppleScript call will quote this string."
   :tag "Path to Evernote"
   :group 'org-mac-link
   :type 'string)
 
-(defcustom org-mac-grab-qutebrowser-app-p t
+(defcustom org-mac-link-qutebrowser-app-p t
   "Add menu option [q]utebrowser to grab links from qutebrowser.app."
   :tag "Grab qutebrowser.app links"
   :group 'org-mac-link
@@ -239,10 +240,10 @@
 
 
 ;; In mac.c, removed in Emacs 23.
-(declare-function do-applescript "org-mac-message" (script))
-(unless (fboundp 'do-applescript)
+(declare-function org-mac-link-do-applescript "org-mac-message" (script))
+(unless (fboundp 'org-mac-link-do-applescript)
   ;; Need to fake this using shell-command-to-string
-  (defun do-applescript (script)
+  (defun org-mac-link-do-applescript (script)
     (let (start cmd return)
       (while (string-match "\n" script)
         (setq script (replace-match "\r" t t script)))
@@ -254,27 +255,27 @@
       (concat "\"" (org-trim return) "\""))))
 
 ;;;###autoload
-(defun org-mac-grab-link ()
+(defun org-mac-link-link ()
   "Prompt for an application to grab a link from.
 When done, go grab the link, and insert it at point."
   (interactive)
   (let* ((descriptors
-	  `(("F" "inder" org-mac-finder-insert-selected ,org-mac-grab-Finder-app-p)
-	    ("m" "ail" org-mac-message-insert-selected ,org-mac-grab-Mail-app-p)
-	    ("d" "EVONthink Pro Office" org-mac-devonthink-item-insert-selected
-	     ,org-mac-grab-devonthink-app-p)
-	    ("o" "utlook" org-mac-outlook-message-insert-selected ,org-mac-grab-Outlook-app-p)
-	    ("a" "ddressbook" org-mac-addressbook-insert-selected ,org-mac-grab-Addressbook-app-p)
-	    ("s" "afari" org-mac-safari-insert-frontmost-url ,org-mac-grab-Safari-app-p)
-	    ("f" "irefox" org-mac-firefox-insert-frontmost-url ,org-mac-grab-Firefox-app-p)
-	    ("v" "imperator" org-mac-vimperator-insert-frontmost-url ,org-mac-grab-Firefox+Vimperator-p)
-	    ("c" "hrome" org-mac-chrome-insert-frontmost-url ,org-mac-grab-Chrome-app-p)
-	    ("b" "rave" org-mac-brave-insert-frontmost-url ,org-mac-grab-Brave-app-p)
-            ("e" "evernote" org-mac-evernote-note-insert-selected ,org-mac-grab-Evernote-app-p)
-	    ("t" "ogether" org-mac-together-insert-selected ,org-mac-grab-Together-app-p)
-	    ("S" "kim" org-mac-skim-insert-page ,org-mac-grab-Skim-app-p)
-	    ("A" "crobat" org-mac-acrobat-insert-page ,org-mac-grab-Acrobat-app-p)
-	    ("q" "utebrowser" org-mac-qutebrowser-insert-frontmost-url ,org-mac-grab-qutebrowser-app-p)))
+	  `(("F" "inder" org-mac-link-finder-insert-selected ,org-mac-link-finder-app-p)
+	    ("m" "ail" org-mac-link-mail-insert-selected ,org-mac-link-mail-app-p)
+	    ("d" "EVONthink Pro Office" org-mac-link-devonthink-item-insert-selected
+	     ,org-mac-link-devonthink-app-p)
+	    ("o" "utlook" org-mac-link-outlook-message-insert-selected ,org-mac-link-outlook-app-p)
+	    ("a" "ddressbook" org-mac-link-addressbook-item-insert-selected ,org-mac-link-addressbook-app-p)
+	    ("s" "afari" org-mac-link-safari-insert-frontmost-url ,org-mac-link-safari-app-p)
+	    ("f" "irefox" org-mac-link-firefox-insert-frontmost-url ,org-mac-link-firefox-app-p)
+	    ("v" "imperator" org-mac-link-vimperator-insert-frontmost-url ,org-mac-link-firefox-vimperator-p)
+	    ("c" "hrome" org-mac-link-chrome-insert-frontmost-url ,org-mac-link-chrome-app-p)
+	    ("b" "rave" org-mac-link-brave-insert-frontmost-url ,org-mac-link-brave-app-p)
+        ("e" "evernote" org-mac-link-evernote-note-insert-selected ,org-mac-link-evernote-app-p)
+	    ("t" "ogether" org-mac-link-together-insert-selected ,org-mac-link-together-app-p)
+	    ("S" "kim" org-mac-link-skim-insert-page ,org-mac-link-skim-app-p)
+	    ("A" "crobat" org-mac-link-acrobat-insert-page ,org-mac-link-acrobat-app-p)
+	    ("q" "utebrowser" org-mac-link-qutebrowser-insert-frontmost-url ,org-mac-link-qutebrowser-app-p)))
          (menu-string (make-string 0 ?x))
          input)
 
@@ -298,7 +299,7 @@ When done, go grab the link, and insert it at point."
                 (call-interactively grab-function))))
           descriptors)))
 
-(defun org-mac-paste-applescript-links (as-link-list)
+(defun org-mac-link-paste-applescript-links (as-link-list)
   "Paste in a list of links from an applescript handler.
 The links are of the form <link>::split::<name>."
   (let* ((noquote-as-link-list
@@ -338,9 +339,9 @@ The links are of the form <link>::split::<name>."
 ;; open, it is not clear which one will be used (though emperically it
 ;; seems that it is always the last active window).
 
-(defun org-as-mac-firefox-get-frontmost-url ()
+(defun org-mac-link-applescript-firefox-get-frontmost-url ()
   (let ((result
-	 (do-applescript
+	 (org-mac-link-do-applescript
 	  (concat
 	   "set oldClipboard to the clipboard\n"
 	   "set frontmostApplication to path to frontmost application\n"
@@ -364,24 +365,24 @@ The links are of the form <link>::split::<name>."
     (car (split-string result "[\r\n]+" t))))
 
 ;;;###autoload
-(defun org-mac-firefox-get-frontmost-url ()
+(defun org-mac-link-firefox-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting Firefox url...")
-  (org-mac-paste-applescript-links (org-as-mac-firefox-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-firefox-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-firefox-insert-frontmost-url ()
+(defun org-mac-link-firefox-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-firefox-get-frontmost-url)))
+  (insert (org-mac-link-firefox-get-frontmost-url)))
 
 
 ;; Handle links from Google Firefox.app running the Vimperator extension
 ;; Grab the frontmost url from Firefox+Vimperator. Same limitations are
 ;; Firefox
 
-(defun org-as-mac-vimperator-get-frontmost-url ()
+(defun org-mac-link-applescript-vimperator-get-frontmost-url ()
   (let ((result
-	 (do-applescript
+	 (org-mac-link-do-applescript
 	  (concat
 	   "set oldClipboard to the clipboard\n"
 	   "set frontmostApplication to path to frontmost application\n"
@@ -404,24 +405,24 @@ The links are of the form <link>::split::<name>."
      "\s+-\s+Vimperator" "" (car (split-string result "[\r\n]+" t)))))
 
 ;;;###autoload
-(defun org-mac-vimperator-get-frontmost-url ()
+(defun org-mac-link-vimperator-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting Vimperator url...")
-  (org-mac-paste-applescript-links (org-as-mac-vimperator-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-vimperator-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-vimperator-insert-frontmost-url ()
+(defun org-mac-link-vimperator-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-vimperator-get-frontmost-url)))
+  (insert (org-mac-link-vimperator-get-frontmost-url)))
 
 
 ;; Handle links from Google Chrome.app
 ;; Grab the frontmost url from Google Chrome. Same limitations as
 ;; Firefox because Chrome doesn't publish an Applescript dictionary
 
-(defun org-as-mac-chrome-get-frontmost-url ()
+(defun org-mac-link-applescript-chrome-get-frontmost-url ()
   (let ((result
-	 (do-applescript
+	 (org-mac-link-do-applescript
 	  (concat
 	   "set frontmostApplication to path to frontmost application\n"
 	   "tell application \"Google Chrome\"\n"
@@ -436,15 +437,15 @@ The links are of the form <link>::split::<name>."
      "^\"\\|\"$" "" (car (split-string result "[\r\n]+" t)))))
 
 ;;;###autoload
-(defun org-mac-chrome-get-frontmost-url ()
+(defun org-mac-link-chrome-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting Chrome url...")
-  (org-mac-paste-applescript-links (org-as-mac-chrome-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-chrome-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-chrome-insert-frontmost-url ()
+(defun org-mac-link-chrome-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-chrome-get-frontmost-url)))
+  (insert (org-mac-link-chrome-get-frontmost-url)))
 
 
 ;; Handle links from Brave.app
@@ -452,9 +453,9 @@ The links are of the form <link>::split::<name>."
 ;; Firefox/Chrome because Brave doesn't publish an Applescript
 ;; dictionary
 
-(defun org-as-mac-brave-get-frontmost-url ()
+(defun org-mac-link-applescript-brave-get-frontmost-url ()
   (let ((result
-	 (do-applescript
+	 (org-mac-link-do-applescript
 	  (concat
 	   "set frontmostApplication to path to frontmost application\n"
 	   "tell application \"Brave\"\n"
@@ -469,22 +470,22 @@ The links are of the form <link>::split::<name>."
      "^\"\\|\"$" "" (car (split-string result "[\r\n]+" t)))))
 
 ;;;###autoload
-(defun org-mac-brave-get-frontmost-url ()
+(defun org-mac-link-brave-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting Brave url...")
-  (org-mac-paste-applescript-links (org-as-mac-brave-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-brave-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-brave-insert-frontmost-url ()
+(defun org-mac-link-brave-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-brave-get-frontmost-url)))
+  (insert (org-mac-link-brave-get-frontmost-url)))
 
 
 ;; Handle links from Safari.app
 ;; Grab the frontmost url from Safari.
 
-(defun org-as-mac-safari-get-frontmost-url ()
-  (do-applescript
+(defun org-mac-link-applescript-safari-get-frontmost-url ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Safari\"\n"
     "	set theUrl to URL of document 1\n"
@@ -493,27 +494,27 @@ The links are of the form <link>::split::<name>."
     "end tell\n")))
 
 ;;;###autoload
-(defun org-mac-safari-get-frontmost-url ()
+(defun org-mac-link-safari-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting Safari url...")
-  (org-mac-paste-applescript-links
-   (org-as-mac-safari-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links
+   (org-mac-link-applescript-safari-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-safari-insert-frontmost-url ()
+(defun org-mac-link-safari-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-safari-get-frontmost-url)))
+  (insert (org-mac-link-safari-get-frontmost-url)))
 
 
 ;; Handle links from together.app
-(org-link-set-parameters "x-together-item" :follow #'org-mac-together-item-open)
+(org-link-set-parameters "x-together-item" :follow #'org-mac-link-together-item-open)
 
-(defun org-mac-together-item-open (uid _)
+(defun org-mac-link-together-item-open (uid _)
   "Open UID, which is a reference to an item in Together."
   (shell-command (concat "open -a Together \"x-together-item:" uid "\"")))
 
-(defun as-get-selected-together-items ()
-  (do-applescript
+(defun org-mac-link-applescript-get-selected-together-items ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Together\"\n"
     "	set theLinkList to {}\n"
@@ -526,21 +527,21 @@ The links are of the form <link>::split::<name>."
     "end tell")))
 
 ;;;###autoload
-(defun org-mac-together-get-selected ()
+(defun org-mac-link-together-get-selected ()
   (interactive)
   (message "Applescript: Getting Together items...")
-  (org-mac-paste-applescript-links (as-get-selected-together-items)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-selected-together-items)))
 
 ;;;###autoload
-(defun org-mac-together-insert-selected ()
+(defun org-mac-link-together-insert-selected ()
   (interactive)
-  (insert (org-mac-together-get-selected)))
+  (insert (org-mac-link-together-get-selected)))
 
 
 ;; Handle links from Finder.app
 
-(defun as-get-selected-finder-items ()
-  (do-applescript
+(defun org-mac-link-applescript-get-selected-finder-items ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Finder\"\n"
     " set theSelection to the selection\n"
@@ -553,26 +554,26 @@ The links are of the form <link>::split::<name>."
     "end tell\n")))
 
 ;;;###autoload
-(defun org-mac-finder-item-get-selected ()
+(defun org-mac-link-finder-item-get-selected ()
   (interactive)
   (message "Applescript: Getting Finder items...")
-  (org-mac-paste-applescript-links (as-get-selected-finder-items)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-selected-finder-items)))
 
 ;;;###autoload
-(defun org-mac-finder-insert-selected ()
+(defun org-mac-link-finder-insert-selected ()
   (interactive)
-  (insert (org-mac-finder-item-get-selected)))
+  (insert (org-mac-link-finder-item-get-selected)))
 
 
 ;; Handle links from AddressBook.app
-(org-link-set-parameters "addressbook" :follow #'org-mac-addressbook-item-open)
+(org-link-set-parameters "addressbook" :follow #'org-mac-link-addressbook-item-open)
 
-(defun org-mac-addressbook-item-open (uid _)
+(defun org-mac-link-addressbook-item-open (uid _)
   "Open UID, which is a reference to an item in the addressbook."
   (shell-command (concat "open \"addressbook:" uid "\"")))
 
-(defun as-get-selected-addressbook-items ()
-  (do-applescript
+(defun org-mac-link-applescript-get-selected-addressbook-items ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Address Book\"\n"
     "	set theSelection to the selection\n"
@@ -585,29 +586,29 @@ The links are of the form <link>::split::<name>."
     "end tell\n")))
 
 ;;;###autoload
-(defun org-mac-addressbook-item-get-selected ()
+(defun org-mac-link-addressbook-item-get-selected ()
   (interactive)
   (message "Applescript: Getting Address Book items...")
-  (org-mac-paste-applescript-links (as-get-selected-addressbook-items)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-selected-addressbook-items)))
 
 ;;;###autoload
-(defun org-mac-addressbook-insert-selected ()
+(defun org-mac-link-addressbook-item-insert-selected ()
   (interactive)
-  (insert (org-mac-addressbook-item-get-selected)))
+  (insert (org-mac-link-addressbook-item-get-selected)))
 
 
 ;; Handle links from Skim.app
 ;;
 ;; Original code & idea by Christopher Suckling (org-mac-protocol)
 
-(org-link-set-parameters "skim" :follow #'org-mac-skim-open)
+(org-link-set-parameters "skim" :follow #'org-mac-link-skim-open)
 
-(defun org-mac-skim-open (uri _)
+(defun org-mac-link-skim-open (uri _)
   "Visit page of pdf in Skim"
   (let* ((page (when (string-match "::\\(.+\\)\\'" uri)
                  (match-string 1 uri)))
          (document (substring uri 0 (match-beginning 0))))
-    (do-applescript
+    (org-mac-link-do-applescript
      (concat
       "tell application \"Skim\"\n"
       "activate\n"
@@ -617,8 +618,8 @@ The links are of the form <link>::split::<name>."
       "go document 1 to page thePage of document 1\n"
       "end tell"))))
 
-(defun as-get-skim-page-link ()
-  (do-applescript
+(defun org-mac-link-applescript-get-skim-page-link ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Skim\"\n"
     "set theDoc to front document\n"
@@ -629,7 +630,7 @@ The links are of the form <link>::split::<name>."
     "set theContent to contents of (get text of theSelection)\n"
     "if theContent is missing value then\n"
     "    set theContent to theTitle & \", p. \" & thePage\n"
-    (when org-mac-Skim-highlight-selection-p
+    (when org-mac-link-highlight-selection-p
       (concat
        "else\n"
        "    tell theDoc\n"
@@ -643,15 +644,15 @@ The links are of the form <link>::split::<name>."
     "return theLink as string\n")))
 
 ;;;###autoload
-(defun org-mac-skim-get-page ()
+(defun org-mac-link-skim-get-page ()
   (interactive)
   (message "Applescript: Getting Skim page link...")
-  (org-mac-paste-applescript-links (as-get-skim-page-link)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-skim-page-link)))
 
 ;;;###autoload
-(defun org-mac-skim-insert-page ()
+(defun org-mac-link-skim-insert-page ()
   (interactive)
-  (insert (org-mac-skim-get-page)))
+  (insert (org-mac-link-skim-get-page)))
 
 ;; Handle links from Adobe Acrobat Pro.app
 ;;
@@ -659,14 +660,14 @@ The links are of the form <link>::split::<name>."
 ;;
 ;; The URI format is path_to_pdf_file::page_number
 
-(org-link-set-parameters "acrobat" :follow #'org-mac-acrobat-open)
+(org-link-set-parameters "acrobat" :follow #'org-mac-link-acrobat-open)
 
-(defun org-mac-acrobat-open (uri _)
+(defun org-mac-link-acrobat-open (uri _)
   "Visit page of pdf in Acrobat"
   (let* ((page (when (string-match "::\\(.+\\)\\'" uri)
                  (match-string 1 uri)))
          (document (substring uri 0 (match-beginning 0))))
-    (do-applescript
+    (org-mac-link-do-applescript
      (concat
       "tell application \"Adobe Acrobat Pro\"\n"
       "  activate\n"
@@ -681,8 +682,8 @@ The links are of the form <link>::split::<name>."
 ;; The applescript returns link in the format
 ;; "adobe:path_to_pdf_file::page_number::split::document_title, p.page_label"
 
-(defun org-mac-as-get-acrobat-page-link ()
-  (do-applescript
+(defun org-mac-link-applescript-get-acrobat-page-link ()
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Adobe Acrobat Pro\"\n"
     "  set theDoc to active doc\n"
@@ -696,35 +697,35 @@ The links are of the form <link>::split::<name>."
     "return theResult as string\n")))
 
 ;;;###autoload
-(defun org-mac-acrobat-get-page ()
+(defun org-mac-link-acrobat-get-page ()
   (interactive)
   (message "Applescript: Getting Acrobat page link...")
-  (org-mac-paste-applescript-links (org-mac-as-get-acrobat-page-link)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-acrobat-page-link)))
 
 ;;;###autoload
-(defun org-mac-acrobat-insert-page ()
+(defun org-mac-link-acrobat-insert-page ()
   (interactive)
-  (insert (org-mac-acrobat-get-page)))
+  (insert (org-mac-link-acrobat-get-page)))
 
 
 ;; Handle links from Microsoft Outlook.app
 
-(org-link-set-parameters "mac-outlook" :follow #'org-mac-outlook-message-open)
+(org-link-set-parameters "mac-outlook" :follow #'org-mac-link-outlook-message-open)
 
-(defun org-mac-outlook-message-open (msgid _)
+(defun org-mac-link-outlook-message-open (msgid _)
   "Open a message in Outlook"
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
-    "tell application \"" org-mac-outlook-path "\"\n"
+    "tell application \"" org-mac-link-outlook-path "\"\n"
     (format "open message id %s\n" (substring-no-properties msgid))
     "activate\n"
     "end tell")))
 
-(defun org-as-get-selected-outlook-mail ()
+(defun org-mac-link-applescript-get-selected-outlook-mail ()
   "AppleScript to create links to selected messages in Microsoft Outlook.app."
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
-    "tell application \"" org-mac-outlook-path "\"\n"
+    "tell application \"" org-mac-link-outlook-path "\"\n"
     "set msgCount to count current messages\n"
     "if (msgCount < 1) then\n"
     "return\n"
@@ -741,7 +742,7 @@ The links are of the form <link>::split::<name>."
     "return theLinkList as string\n"
     "end tell")))
 
-(defun org-sh-get-flagged-outlook-mail ()
+(defun org-mac-link-shell-get-flagged-outlook-mail ()
   "Shell commands to create links to flagged messages in Microsoft Outlook.app."
   (mapconcat
    (lambda (x) ""
@@ -766,7 +767,7 @@ The links are of the form <link>::split::<name>."
    ""))
 
 ;;;###autoload
-(defun org-mac-outlook-message-get-links (&optional select-or-flag)
+(defun org-mac-link-outlook-message-get-links (&optional select-or-flag)
   "Create links to the messages currently selected or flagged in Microsoft Outlook.app.
 This will use AppleScript to get the message-id and the subject of the
 messages in Microsoft Outlook.app and make a link out of it.
@@ -776,24 +777,24 @@ The Org-syntax text will be pushed to the kill ring, and also returned."
   (interactive "sLink to (s)elected or (f)lagged messages: ")
   (setq select-or-flag (or select-or-flag "s"))
   (message "Org Mac Outlook: searching mailboxes...")
-  (org-mac-paste-applescript-links
+  (org-mac-link-paste-applescript-links
    (if (string= select-or-flag "s")
-	(org-as-get-selected-outlook-mail)
+	(org-mac-link-applescript-get-selected-outlook-mail)
       (if (string= select-or-flag "f")
-	  (org-sh-get-flagged-outlook-mail)
+	  (org-mac-link-shell-get-flagged-outlook-mail)
 	(error "Please select \"s\" or \"f\"")))))
 
 ;;;###autoload
-(defun org-mac-outlook-message-insert-selected ()
+(defun org-mac-link-outlook-message-insert-selected ()
   "Insert a link to the messages currently selected in Microsoft Outlook.app.
 This will use AppleScript to get the message-id and the subject
 of the active mail in Microsoft Outlook.app and make a link out
 of it."
   (interactive)
-  (insert (org-mac-outlook-message-get-links "s")))
+  (insert (org-mac-link-outlook-message-get-links "s")))
 
 ;;;###autoload
-(defun org-mac-outlook-message-insert-flagged (org-buffer org-heading)
+(defun org-mac-link-outlook-message-insert-flagged (org-buffer org-heading)
   "Asks for an org buffer and a heading within it, and replace message links.
 If heading exists, delete all mac-outlook:// links within
 heading's first level.  If heading doesn't exist, create it at
@@ -811,33 +812,33 @@ after heading."
                   (while (re-search-forward
                           message-re (save-excursion (outline-next-heading)) t)
                     (delete-region (match-beginning 0) (match-end 0)))
-                  (insert "\n" (org-mac-outlook-message-get-links "f")))
+                  (insert "\n" (org-mac-link-outlook-message-get-links "f")))
                 (flush-lines "^$" (point) (outline-next-heading)))
-	    (insert "\n" (org-mac-outlook-message-get-links "f")))
+	    (insert "\n" (org-mac-link-outlook-message-get-links "f")))
 	(goto-char (point-max))
 	(insert "\n")
 	(org-insert-heading nil t)
-	(insert org-heading "\n" (org-mac-outlook-message-get-links "f"))))))
+	(insert org-heading "\n" (org-mac-link-outlook-message-get-links "f"))))))
 
 ;; Handle links from Evernote.app
 
-(org-link-set-parameters "mac-evernote" :follow #'org-mac-evernote-note-open)
+(org-link-set-parameters "mac-evernote" :follow #'org-mac-link-evernote-note-open)
 
-(defun org-mac-evernote-path ()
+(defun org-mac-link-evernote-path ()
   "Get path to evernote.
-First consider the value of ORG-MAC-EVERNOTE-PATH, then attempt to find it.
+First consider the value of ORG-MAC-LINK-EVERNOTE-PATH, then attempt to find it.
 Finding the path can be slow."
-  (or org-mac-evernote-path
+  (or org-mac-link-evernote-path
       (replace-regexp-in-string (rx (* (any " \t\n")) eos)
                                 ""
                                 (shell-command-to-string
                                  "mdfind kMDItemCFBundleIdentifier == 'com.evernote.Evernote'"))))
 
-(defun org-mac-evernote-note-open (noteid _)
+(defun org-mac-link-evernote-note-open (noteid _)
   "Open a note in Evernote"
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
-    "tell application \"" (org-mac-evernote-path) "\"\n"
+    "tell application \"" (org-mac-link-evernote-path) "\"\n"
     "    set theNotes to get every note of every notebook where its local id is \"" (substring-no-properties noteid) "\"\n"
     "    repeat with _note in theNotes\n"
     "        if length of _note is not 0 then\n"
@@ -848,11 +849,11 @@ Finding the path can be slow."
     "    activate\n"
     "end tell")))
 
-(defun org-as-get-selected-evernote-notes ()
+(defun org-mac-link-applescript-get-selected-evernote-notes ()
   "AppleScript to create links to selected notes in Evernote.app."
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
-    "tell application \"" (org-mac-evernote-path) "\"\n"
+    "tell application \"" (org-mac-link-evernote-path) "\"\n"
      "    set noteCount to count selection\n"
      "    if (noteCount < 1) then\n"
      "        return\n"
@@ -870,27 +871,27 @@ Finding the path can be slow."
      "end tell\n")))
 
 ;;;###autoload
-(defun org-mac-evernote-note-insert-selected ()
+(defun org-mac-link-evernote-note-insert-selected ()
   "Insert a link to the notes currently selected in Evernote.app.
 This will use AppleScript to get the note id and the title of the
 note(s) in Evernote.app and make a link out of it/them."
   (interactive)
   (message "Org Mac Evernote: searching notes...")
-(insert (org-mac-paste-applescript-links
-	 (org-as-get-selected-evernote-notes))))
+(insert (org-mac-link-paste-applescript-links
+	 (org-mac-link-applescript-get-selected-evernote-notes))))
 
 
 ;; Handle links from DEVONthink Pro Office.app
 
-(org-link-set-parameters "x-devonthink-item" :follow #'org-devonthink-item-open)
+(org-link-set-parameters "x-devonthink-item" :follow #'org-mac-link-devonthink-item-open)
 
-(defun org-devonthink-item-open (uid _)
+(defun org-mac-link-devonthink-item-open (uid _)
   "Open UID, which is a reference to an item in DEVONthink Pro Office."
   (shell-command (concat "open \"x-devonthink-item:" uid "\"")))
 
-(defun org-as-get-selected-devonthink-item ()
+(defun org-mac-link-applescript-get-selected-devonthink-item ()
   "AppleScript to create links to selected items in DEVONthink Pro Office.app."
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
     "set theLinkList to {}\n"
     "tell application \"DEVONthink Pro\"\n"
@@ -907,40 +908,39 @@ note(s) in Evernote.app and make a link out of it/them."
     "copy theLink to end of theLinkList\n"
     "end repeat\n"
     "end tell\n"
-    "return theLinkList as string"
-    )))
+    "return theLinkList as string")))
 
-(defun org-mac-devonthink-get-links ()
+(defun org-mac-link-devonthink-get-links ()
   "Create links to the item(s) currently selected in DEVONthink Pro Office.
 This will use AppleScript to get the `uuid' and the `name' of the
 selected items in DEVONthink Pro Office.app and make links out of
 it/them. This function will push the Org-syntax text to the kill
 ring, and also return it."
   (message "Org Mac DEVONthink: looking for selected items...")
-  (org-mac-paste-applescript-links (org-as-get-selected-devonthink-item)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-selected-devonthink-item)))
 
 ;;;###autoload
-(defun org-mac-devonthink-item-insert-selected ()
+(defun org-mac-link-devonthink-item-insert-selected ()
   "Insert a link to the item(s) currently selected in DEVONthink Pro Office.
 This will use AppleScript to get the `uuid'(s) and the name(s) of the
 selected items in DEVONthink Pro Office and make link(s) out of it/them."
   (interactive)
-  (insert (org-mac-devonthink-get-links)))
+  (insert (org-mac-link-devonthink-get-links)))
 
 
 ;; Handle links from Mail.app
 
-(org-link-set-parameters "message" :follow #'org-mac-message-open)
+(org-link-set-parameters "message" :follow #'org-mac-link-mail-open)
 
-(defun org-mac-message-open (message-id _)
+(defun org-mac-link-mail-open (message-id _)
   "Visit the message with MESSAGE-ID.
 This will use the command `open' with the message URL."
   (start-process (concat "open message:" message-id) nil
                  "open" (concat "message://%3C" (substring message-id 2) "%3E")))
 
-(defun org-as-get-selected-mail ()
+(defun org-mac-link-applescript-get-selected-mail ()
   "AppleScript to create links to selected messages in Mail.app."
-  (do-applescript
+  (org-mac-link-do-applescript
    (concat
     "tell application \"Mail\"\n"
     "set theLinkList to {}\n"
@@ -957,15 +957,15 @@ This will use the command `open' with the message URL."
     "return theLinkList as string\n"
     "end tell")))
 
-(defun org-as-get-flagged-mail ()
+(defun org-mac-link-applescript-get-flagged-mail ()
   "AppleScript to create links to flagged messages in Mail.app."
-  (unless org-mac-mail-account
-    (error "You must set org-mac-mail-account"))
-  (do-applescript
+  (unless org-mac-link-mail-account
+    (error "You must set org-mac-link-mail-account"))
+  (org-mac-link-do-applescript
    (concat
     ;; Get links
     "tell application \"Mail\"\n"
-    "set theMailboxes to every mailbox of account \"" org-mac-mail-account "\"\n"
+    "set theMailboxes to every mailbox of account \"" org-mac-link-mail-account "\"\n"
     "set theLinkList to {}\n"
     "repeat with aMailbox in theMailboxes\n"
     "set theSelection to (every message in aMailbox whose flagged status = true)\n"
@@ -980,7 +980,7 @@ This will use the command `open' with the message URL."
     "end tell")))
 
 ;;;###autoload
-(defun org-mac-message-get-links (&optional select-or-flag)
+(defun org-mac-link-mail-get-links (&optional select-or-flag)
   "Create links to the messages currently selected or flagged in Mail.app.
 This will use AppleScript to get the message-id and the subject of the
 messages in Mail.app and make a link out of it.
@@ -990,25 +990,25 @@ The Org-syntax text will be pushed to the kill ring, and also returned."
   (interactive "sLink to (s)elected or (f)lagged messages: ")
   (setq select-or-flag (or select-or-flag "s"))
   (message "AppleScript: searching mailboxes...")
-  (org-mac-paste-applescript-links
+  (org-mac-link-paste-applescript-links
    (cond
-    ((string= select-or-flag "s") (org-as-get-selected-mail))
-    ((string= select-or-flag "f") (org-as-get-flagged-mail))
+    ((string= select-or-flag "s") (org-mac-link-applescript-get-selected-mail))
+    ((string= select-or-flag "f") (org-mac-link-applescript-get-flagged-mail))
     (t (error "Please select \"s\" or \"f\"")))))
 
 ;;;###autoload
-(defun org-mac-message-insert-selected ()
+(defun org-mac-link-mail-insert-selected ()
   "Insert a link to the messages currently selected in Mail.app.
 This will use AppleScript to get the message-id and the subject of the
 active mail in Mail.app and make a link out of it."
   (interactive)
-  (insert (org-mac-message-get-links "s")))
+  (insert (org-mac-link-mail-get-links "s")))
 
 ;; The following line is for backward compatibility
-(defalias 'org-mac-message-insert-link 'org-mac-message-insert-selected)
+(defalias 'org-mac-link-mail-insert-link 'org-mac-link-mail-insert-selected)
 
 ;;;###autoload
-(defun org-mac-message-insert-flagged (org-buffer org-heading)
+(defun org-mac-link-mail-insert-flagged (org-buffer org-heading)
   "Asks for an org buffer and a heading within it, and replace message links.
 If heading exists, delete all message:// links within heading's first
 level.  If heading doesn't exist, create it at point-max.  Insert
@@ -1025,20 +1025,20 @@ list of message:// links to flagged mail after heading."
                   (while (re-search-forward
                           message-re (save-excursion (outline-next-heading)) t)
                     (delete-region (match-beginning 0) (match-end 0)))
-                  (insert "\n" (org-mac-message-get-links "f")))
+                  (insert "\n" (org-mac-link-mail-get-links "f")))
                 (flush-lines "^$" (point) (outline-next-heading)))
-	    (insert "\n" (org-mac-message-get-links "f")))
+	    (insert "\n" (org-mac-link-mail-get-links "f")))
 	(goto-char (point-max))
 	(insert "\n")
 	(org-insert-heading nil t)
-	(insert org-heading "\n" (org-mac-message-get-links "f"))))))
+	(insert org-heading "\n" (org-mac-link-mail-get-links "f"))))))
 
 
 ;; Handle links from qutebrowser.app
 
-(defun org-as-mac-qutebrowser-get-frontmost-url ()
+(defun org-mac-link-applescript-qutebrowser-get-frontmost-url ()
   (let ((result
-         (do-applescript
+         (org-mac-link-do-applescript
           (concat
            "set oldClipboard to the clipboard\n"
            "set frontmostApplication to path to frontmost application\n"
@@ -1069,15 +1069,15 @@ list of message:// links to flagged mail after heading."
      (car (split-string result "[\r\n]+" t))))
 
 ;;;###autoload
-(defun org-mac-qutebrowser-get-frontmost-url ()
+(defun org-mac-link-qutebrowser-get-frontmost-url ()
   (interactive)
   (message "Applescript: Getting qutebrowser url...")
-  (org-mac-paste-applescript-links (org-as-mac-qutebrowser-get-frontmost-url)))
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-qutebrowser-get-frontmost-url)))
 
 ;;;###autoload
-(defun org-mac-qutebrowser-insert-frontmost-url ()
+(defun org-mac-link-qutebrowser-insert-frontmost-url ()
   (interactive)
-  (insert (org-mac-qutebrowser-get-frontmost-url)))
+  (insert (org-mac-link-qutebrowser-get-frontmost-url)))
 
 
 (provide 'org-mac-link)
