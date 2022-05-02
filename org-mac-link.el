@@ -29,33 +29,6 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs.  If not, see <https://www.gnu.org/licenses/>.
 ;;
-;; Version: 1.1
-;; Keywords: org, mac, hyperlink
-;;
-;; Version: 1.2
-;; Keywords: outlook
-;; Author: Mike McLean <mike.mclean@pobox.com>
-;; Add support for Microsoft Outlook for Mac as Org mode links
-;;
-;; Version: 1.3
-;; Author: Alan Schmitt <alan.schmitt@polytechnique.org>
-;; Consistently use `org-mac-link-paste-applescript-links'
-;;
-;; Version 1.4
-;; Author: Mike McLean <mike.mclean@pobox.com>
-;; Make the path to Microsoft Outlook a `defcustom'
-;;
-;; Version 1.5
-;; Author: Mike McLean <mike.mclean@pobox.com>
-;; Add Support for Evernote
-;;
-;; Version 1.6
-;; Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
-;; Add Support for qutebrowser
-;;
-;; Version 1.7
-;; Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
-;; Consistently use the package prefix in symbols
 ;;
 ;;; Commentary:
 ;;

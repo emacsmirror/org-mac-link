@@ -1,0 +1,41 @@
+* Changes and New Features in org-mac-link
+
+** Version: 1.1
+- Keywords: org, mac, hyperlink
+
+** Version: 1.2
+- Keywords: outlook
+- Author: Mike McLean <mike.mclean@pobox.com>
+
+*** Improvements
+- Add support for Microsoft Outlook for Mac as Org mode links
+
+** Version: 1.3
+- Author: Alan Schmitt <alan.schmitt@polytechnique.org>
+
+*** Improvements
+- Consistently use =org-mac-link-paste-applescript-links=
+
+** Version 1.4
+- Author: Mike McLean <mike.mclean@pobox.com>
+
+*** Improvements
+- Make the path to Microsoft Outlook a =defcustom=
+
+** Version 1.5
+- Author: Mike McLean <mike.mclean@pobox.com>
+
+*** Improvements
+- Add Support for Evernote
+
+** Version 1.6
+- Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
+
+*** Improvements
+- Add Support for qutebrowser
+
+** Version 1.7
+- Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
+
+*** Improvements
+- Consistently use package prefix =org-mac-link= for symbols
