@@ -39,3 +39,9 @@
 
 *** Improvements
 - Consistently use package prefix =org-mac-link= for symbols
+
+** Version 1.8
+- Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
+
+*** Fixes
+- Fix =checkdoc= errors for functions and variables
