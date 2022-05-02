@@ -1,4 +1,4 @@
-;;; org-mac-link.el --- Insert org-mode links to items selected in various Mac apps
+;;; org-mac-link.el --- Insert org-mode links to items selected in various Mac apps. -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (c) 2010-2021 Free Software Foundation, Inc.
 ;;
