@@ -1,4 +1,4 @@
-;;; org-mac-link.el --- Insert org-mode links to items selected in various Mac apps. -*- lexical-binding: t; -*-
+;;; org-mac-link.el --- Insert org-mode links to items selected in various Mac apps -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (c) 2010-2021 Free Software Foundation, Inc.
 ;;
@@ -287,7 +287,7 @@ The links are of the form <link>::split::<name>."
 				  (setq x (match-string 1 x)))
 		    x)
 		  (split-string noquote-as-link-list "[\r\n]+")))
-         split-link URL description orglink orglink-insert rtn orglink-list)
+         split-link URL description orglink rtn orglink-list)
     (while link-list
       (setq split-link (split-string (pop link-list) "::split::"))
       (setq URL (car split-link))
