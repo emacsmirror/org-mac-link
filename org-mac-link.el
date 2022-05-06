@@ -70,12 +70,12 @@
 ;;
 ;; Optionally bind a key to activate the link grabber menu, like this:
 ;; (add-hook 'org-mode-hook (lambda ()
-;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-link-link)))
+;;   (define-key org-mode-map (kbd "C-c g") 'org-mac-link-get-link)))
 ;;
 ;; Usage:
 ;;
 ;; Type C-c g (or whatever key you defined, as above), or type M-x
-;; org-mac-link-link RET to activate the link grabber.  This will present
+;; org-mac-link-get-link RET to activate the link grabber.  This will present
 ;; you with a menu to choose an application from which to grab a link
 ;; to insert at point.  You may also type C-g to abort.
 ;;
@@ -231,7 +231,7 @@ Do not escape spaces as the AppleScript call will quote this string."
       (concat "\"" (org-trim return) "\""))))
 
 ;;;###autoload
-(defun org-mac-link-link ()
+(defun org-mac-link-get-link ()
   "Prompt for an application to grab a link from.
 When done, go grab the link, and insert it at point."
   (interactive)
