@@ -293,7 +293,7 @@ The links are of the form <link>::split::<name>."
       (setq URL (car split-link))
       (setq description (cadr split-link))
       (when (not (string= URL ""))
-        (setq orglink (org-make-link-string URL description))
+        (setq orglink (org-link-make-string URL description))
         (push orglink orglink-list)))
     (setq rtn (mapconcat 'identity orglink-list "\n"))
     (kill-new rtn)
