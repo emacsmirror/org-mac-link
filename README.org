@@ -29,6 +29,11 @@ Original authors are:
 - Alan Schmitt <alan.schmitt@polytechnique.org>
 - Mike McLean <mike.mclean@pobox.com>
 
+* Known issues
+- Getting/inserting links from the "New Outlook" UI does not work as of now.
+- Getting/inserting links to flagged Mail.app mails does not work as of now
+- Getting/inserting links to flagged Outlook mails does not work as of now
+
 * License
 All files in this repository are licensed under the GNU General Public
 License, either version 3 of the License, or (at your option) any
