@@ -145,7 +145,7 @@ Do not escape spaces as the AppleScript call will quote this string."
   :type 'boolean)
 
 (defcustom org-mac-link-firefox-vimperator-p nil
-  "Add menu option [v]imperator to grab links from Firefox.app running the Vimperator plugin."
+  "Add menu option [v]imperator to grab links from Firefox.app with Vimperator."
   :tag "Grab Vimperator/Firefox.app links"
   :group 'org-mac-link
   :type 'boolean)
@@ -362,7 +362,7 @@ The links are of the form <link>::split::<name>."
 ;; Firefox
 
 (defun org-mac-link-applescript-vimperator-get-frontmost-url ()
-  "AppleScript to get the links to the frontmost window of the Firefox.app with Vimperator."
+  "AppleScript to get links of frontmost window of Firefox.app with Vimperator."
   (let ((result
 	 (org-mac-link-do-applescript
 	  (concat
