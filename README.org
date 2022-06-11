@@ -4,6 +4,16 @@ Insert org-mode links to items selected in various Mac apps.
 You can install this package by putting the file =org-mac-link.el=
 into your Emacs ~load-path~.
 
+* Attention
+This package has been heavily refactored to meet some criteria of [[https://melpa.org][MELPA]] like:
+
+- Meeting requirements of [[https://github.com/purcell/package-lint][package-lint]]
+- Meeting requirements checkdoc
+- Reducing warnings when byte compiling
+
+It is possible that your configuration might break if you customized the settings of the package a lot.
+Please see the commits on the [[https://gitlab.com/aimebertrand/org-mac-link][GitLab Repo]] and in the [[file:CHANGES.org][CHANGES]] file to see the changes. Mostly changes are the names of functions and Variables, where I added the prefix of the package.
+
 * Supported applications
 - Finder.app :: Links to the selected files in the frontmost window
 - Mail.app :: Links to the selected messages in the message list
