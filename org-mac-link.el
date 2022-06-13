@@ -295,7 +295,7 @@ The links are of the form <link>::split::<name>."
       (when (not (string= URL ""))
         (setq orglink (org-link-make-string URL description))
         (push orglink orglink-list)))
-    (setq rtn (mapconcat 'identity orglink-list "\n"))
+    (setq rtn (mapconcat #'identity orglink-list "\n"))
     (kill-new rtn)
     rtn))
 
@@ -1024,7 +1024,7 @@ active mail in Mail.app and make a link out of it."
   (insert (org-mac-link-mail-get-links "s")))
 
 ;; The following line is for backward compatibility
-(defalias 'org-mac-link-mail-insert-link 'org-mac-link-mail-insert-selected)
+(defalias 'org-mac-link-mail-insert-link #'org-mac-link-mail-insert-selected)
 
 ;;;###autoload
 (defun org-mac-link-mail-insert-flagged (org-buffer org-heading)
