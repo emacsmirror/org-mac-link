@@ -821,7 +821,7 @@ Insert list of mac-outlook:// links to flagged mail after heading."
     (goto-char (point-min))
     (let ((isearch-forward t)
           (message-re "\\[\\[\\(mac-outlook:\\)\\([^]]+\\)\\]\\(\\[\\([^]]+\\)\\]\\)?\\]"))
-      (if (org-goto-local-search-headings org-heading nil t)
+      (if (org-goto--local-search-headings org-heading nil t)
           (if (not (eobp))
               (progn
                 (save-excursion
@@ -1037,7 +1037,7 @@ Insert list of message:// links to flagged mail after heading."
     (goto-char (point-min))
     (let ((isearch-forward t)
           (message-re "\\[\\[\\(message:\\)\\([^]]+\\)\\]\\(\\[\\([^]]+\\)\\]\\)?\\]"))
-      (if (org-goto-local-search-headings org-heading nil t)
+      (if (org-goto--local-search-headings org-heading nil t)
           (if (not (eobp))
               (progn
                 (save-excursion
