@@ -89,6 +89,7 @@
 ;;; Code:
 
 (require 'org)
+(require 'org-goto)
 
 (defgroup org-mac-link nil
   "Options for grabbing links from Mac applications."
