@@ -45,3 +45,12 @@
 
 *** Fixes
 - Fix =checkdoc= errors for functions and variables
+
+** Version 1.9
+- Contributor: Aimé Bertrand <aime.bertrand@macowners.club>
+
+*** Fixes
+These have been Fixed with commit 6036aac8 & MR !3
+
+- Getting/inserting links to flagged Mail.app mails does now work
+- Getting/inserting links to flagged Outlook mails does now work (old Outlook UI ony)

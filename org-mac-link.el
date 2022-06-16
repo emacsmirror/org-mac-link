@@ -8,7 +8,7 @@
 ;;         Daniil Frumin <difrumin@gmail.com>
 ;;         Alan Schmitt <alan.schmitt@polytechnique.org>
 ;;         Mike McLean <mike.mclean@pobox.com>
-;; Version: 1.8
+;; Version: 1.9
 ;; Keywords: files, wp, url, org
 ;; Package-Requires: ((emacs "27.1"))
 ;; Maintainer: Aimé Bertrand <aime.bertrand@macowners.club>
