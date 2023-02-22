@@ -127,6 +127,12 @@ Do not escape spaces as the AppleScript call will quote this string."
   :group 'org-mac-link
   :type 'boolean)
 
+(defcustom org-mac-link-devonthink-app-name "DEVONthink Pro"
+  "Name of DEVONthink Pro application."
+  :tag "Name of DEVONthink Pro application"
+  :group 'org-mac-link
+  :type 'string)
+
 (defcustom org-mac-link-addressbook-app-p t
   "Add menu option [a]ddressbook to grab links from AddressBook.app."
   :tag "Grab AddressBook.app links"
@@ -914,7 +920,7 @@ note(s) in Evernote.app and make a link out of it/them."
   (org-mac-link-do-applescript
    (concat
     "set theLinkList to {}\n"
-    "tell application \"DEVONthink Pro\"\n"
+    "tell application \"" org-mac-link-devonthink-app-name "\"\n"
     "set selectedRecords to selection\n"
     "set selectionCount to count of selectedRecords\n"
     "if (selectionCount < 1) then\n"
