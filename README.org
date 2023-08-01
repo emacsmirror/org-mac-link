@@ -26,7 +26,7 @@ Please see the commits on the [[https://gitlab.com/aimebertrand/org-mac-link][Gi
 - Together.app :: Links to the selected items in the library list
 - Skim.app :: A link to the selected page in the topmost pdf document
 - Microsoft Outlook.app :: A link to the selected message in the message list
-- DEVONthink Pro Office.app :: A link to the selected DEVONthink item(s)
+- DEVONthink*.app :: A link to the selected DEVONthink item(s)
 - Evernote.app :: A link to the selected Evernote item(s)
 - qutebrowser.app :: The url of the frontmost tab in the frontmost window
 

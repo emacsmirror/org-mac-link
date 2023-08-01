@@ -55,7 +55,7 @@
 ;; Together.app - Grab links to the selected items in the library list
 ;; Skim.app - Grab a link to the selected page in the topmost pdf document
 ;; Microsoft Outlook.app - Grab a link to the selected message in the message list
-;; DEVONthink Pro Office.app - Grab a link to the selected DEVONthink item(s); open DEVONthink item by reference
+;; DEVONthink*.app - Grab a link to the selected DEVONthink item(s); open DEVONthink item by reference
 ;; Evernote.app - Grab a link to the selected Evernote item(s); open Evernote item by ID
 ;; qutebrowser.app - Grab the url of the frontmost tab in the frontmost window
 ;;
@@ -122,8 +122,8 @@ Do not escape spaces as the AppleScript call will quote this string."
   :type 'string)
 
 (defcustom org-mac-link-devonthink-app-p t
-  "Add menu option [d]EVONthink to grab links from DEVONthink Pro Office.app."
-  :tag "Grab DEVONthink Pro Office.app links"
+  "Add menu option [d]EVONthink to grab links from DEVONthink*.app."
+  :tag "Grab DEVONthink*.app links"
   :group 'org-mac-link
   :type 'boolean)
 
@@ -243,7 +243,7 @@ is active, that will be the link's description."
   (let* ((descriptors
 	  `(("F" "inder" org-mac-link-finder-insert-selected ,org-mac-link-finder-app-p)
 	    ("m" "ail" org-mac-link-mail-insert-selected ,org-mac-link-mail-app-p)
-	    ("d" "EVONthink Pro Office" org-mac-link-devonthink-item-insert-selected
+      ("d" "EVONthink" org-mac-link-devonthink-item-insert-selected
 	     ,org-mac-link-devonthink-app-p)
 	    ("o" "utlook" org-mac-link-outlook-message-insert-selected ,org-mac-link-outlook-app-p)
 	    ("a" "ddressbook" org-mac-link-addressbook-item-insert-selected ,org-mac-link-addressbook-app-p)
@@ -917,20 +917,20 @@ note(s) in Evernote.app and make a link out of it/them."
 
 
 
-;;; Handle links from DEVONthink Pro Office.app
+;;; Handle links from DEVONthink*.app
 
 (org-link-set-parameters "x-devonthink-item" :follow #'org-mac-link-devonthink-item-open)
 
 (defun org-mac-link-devonthink-item-open (uid _)
-  "Open UID, which is a reference to an item in DEVONthink Pro Office."
+  "Open UID, which is a reference to an item in DEVONthink*.app."
   (shell-command (concat "open \"x-devonthink-item:" uid "\"")))
 
 (defun org-mac-link-applescript-get-selected-devonthink-item ()
-  "AppleScript to create links to selected items in DEVONthink Pro Office.app."
+  "AppleScript to create links to selected items in DEVONthink*.app."
   (org-mac-link-do-applescript
    (concat
     "set theLinkList to {}\n"
-    "tell application \"DEVONthink Pro\"\n"
+    "tell application id \"DNtp\" \n"
     "set selectedRecords to selection\n"
     "set selectionCount to count of selectedRecords\n"
     "if (selectionCount < 1) then\n"
@@ -947,18 +947,18 @@ note(s) in Evernote.app and make a link out of it/them."
     "return theLinkList as string")))
 
 (defun org-mac-link-devonthink-get-links ()
-  "Create links to the item(s) currently selected in DEVONthink Pro Office.
+  "Create links to the item(s) currently selected in DEVONthink*.app.
 This will use AppleScript to get the `uuid' and the `name' of the
-selected items in DEVONthink Pro Office.app and make links out of it/them.
+selected items in DEVONthink*.app and make links out of it/them.
 This function will push the Org-syntax text to the kill ring, and return it."
   (message "Org Mac DEVONthink: looking for selected items...")
   (org-mac-link-paste-applescript-links (org-mac-link-applescript-get-selected-devonthink-item)))
 
 ;;;###autoload
 (defun org-mac-link-devonthink-item-insert-selected ()
-  "Insert a link to the item(s) currently selected in DEVONthink Pro Office.
+  "Insert a link to the item(s) currently selected in DEVONthink*.app.
 This will use AppleScript to get the `uuid'(s) and the name(s) of the
-selected items in DEVONthink Pro Office and make link(s) out of it/them."
+selected items in DEVONthink*.app and make link(s) out of it/them."
   (interactive)
   (insert (org-mac-link-devonthink-get-links)))
 
