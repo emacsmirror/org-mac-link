@@ -85,6 +85,9 @@
 ;; customizing the group `org-mac-link'.  Changes take effect
 ;; immediately.
 ;;
+;; You can also add grab handlers for other apps, just by updating
+;; `org-mac-link-descriptors', for instance:
+;; `(push '("W" "ord" my-word-handler t) org-mac-link-descriptors)'
 ;;
 ;;; Code:
 
@@ -231,6 +234,33 @@ Do not escape spaces as the AppleScript call will quote this string."
       (setq return (shell-command-to-string cmd))
       (concat "\"" (org-trim return) "\""))))
 
+
+;; List of lists representing grab menu items.
+;;
+;; Each element corresponds to one application, listing the menu shortcut,
+;; rest of the application name, grab handler function name, and
+;; predicate indicating whether that application should be shown in the menu.
+;;
+;; The predicates are customizable variables whose value is reloaded upon each
+;; invocation of the grab menu, see `org-mac-link-get-link'.
+(defvar org-mac-link-descriptors
+  `(("F" "inder" org-mac-link-finder-insert-selected org-mac-link-finder-app-p)
+    ("m" "ail" org-mac-link-mail-insert-selected org-mac-link-mail-app-p)
+    ("d" "EVONthink Pro Office" org-mac-link-devonthink-item-insert-selected org-mac-link-devonthink-app-p)
+    ("o" "utlook" org-mac-link-outlook-message-insert-selected org-mac-link-outlook-app-p)
+    ("a" "ddressbook" org-mac-link-addressbook-item-insert-selected org-mac-link-addressbook-app-p)
+    ("s" "afari" org-mac-link-safari-insert-frontmost-url org-mac-link-safari-app-p)
+    ("f" "irefox" org-mac-link-firefox-insert-frontmost-url org-mac-link-firefox-app-p)
+    ("v" "imperator" org-mac-link-vimperator-insert-frontmost-url org-mac-link-firefox-vimperator-p)
+    ("c" "hrome" org-mac-link-chrome-insert-frontmost-url org-mac-link-chrome-app-p)
+    ("b" "rave" org-mac-link-brave-insert-frontmost-url org-mac-link-brave-app-p)
+    ("e" "evernote" org-mac-link-evernote-note-insert-selected org-mac-link-evernote-app-p)
+    ("t" "ogether" org-mac-link-together-insert-selected org-mac-link-together-app-p)
+    ("S" "kim" org-mac-link-skim-insert-page org-mac-link-skim-app-p)
+    ("A" "crobat" org-mac-link-acrobat-insert-page org-mac-link-acrobat-app-p)
+    ("q" "utebrowser" org-mac-link-qutebrowser-insert-frontmost-url org-mac-link-qutebrowser-app-p)))
+
+
 ;;;###autoload
 (defun org-mac-link-get-link (&optional beg end)
   "Prompt for an application to grab a link from.
@@ -240,29 +270,13 @@ is active, that will be the link's description."
    (if (use-region-p)
        (list (region-beginning) (region-end))
        '()))
-  (let* ((descriptors
-	  `(("F" "inder" org-mac-link-finder-insert-selected ,org-mac-link-finder-app-p)
-	    ("m" "ail" org-mac-link-mail-insert-selected ,org-mac-link-mail-app-p)
-      ("d" "EVONthink" org-mac-link-devonthink-item-insert-selected
-	     ,org-mac-link-devonthink-app-p)
-	    ("o" "utlook" org-mac-link-outlook-message-insert-selected ,org-mac-link-outlook-app-p)
-	    ("a" "ddressbook" org-mac-link-addressbook-item-insert-selected ,org-mac-link-addressbook-app-p)
-	    ("s" "afari" org-mac-link-safari-insert-frontmost-url ,org-mac-link-safari-app-p)
-	    ("f" "irefox" org-mac-link-firefox-insert-frontmost-url ,org-mac-link-firefox-app-p)
-	    ("v" "imperator" org-mac-link-vimperator-insert-frontmost-url ,org-mac-link-firefox-vimperator-p)
-	    ("c" "hrome" org-mac-link-chrome-insert-frontmost-url ,org-mac-link-chrome-app-p)
-	    ("b" "rave" org-mac-link-brave-insert-frontmost-url ,org-mac-link-brave-app-p)
-        ("e" "evernote" org-mac-link-evernote-note-insert-selected ,org-mac-link-evernote-app-p)
-	    ("t" "ogether" org-mac-link-together-insert-selected ,org-mac-link-together-app-p)
-	    ("S" "kim" org-mac-link-skim-insert-page ,org-mac-link-skim-app-p)
-	    ("A" "crobat" org-mac-link-acrobat-insert-page ,org-mac-link-acrobat-app-p)
-	    ("q" "utebrowser" org-mac-link-qutebrowser-insert-frontmost-url ,org-mac-link-qutebrowser-app-p)))
+  (let* ((descriptors org-mac-link-descriptors)
          (menu-string (make-string 0 ?x))
          input)
 
     ;; Create the menu string for the keymap
     (mapc (lambda (descriptor)
-            (when (elt descriptor 3)
+            (when (eval (elt descriptor 3)) ;eval needed to reload latest predicate values
               (setf menu-string (concat menu-string
 					"[" (elt descriptor 0) "]"
 					(elt descriptor 1) " "))))
@@ -274,7 +288,7 @@ is active, that will be the link's description."
     (setq input (read-char-exclusive))
     (mapc (lambda (descriptor)
             (let ((key (elt (elt descriptor 0) 0))
-                  (active (elt descriptor 3))
+                  (active (eval (elt descriptor 3))) ;eval needed to reload latest predicate values
                   (grab-function (elt descriptor 2)))
               (when (and active (eq input key))
                 (if (and beg end)

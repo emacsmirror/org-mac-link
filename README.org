@@ -30,6 +30,12 @@ Please see the commits on the [[https://gitlab.com/aimebertrand/org-mac-link][Gi
 - Evernote.app :: A link to the selected Evernote item(s)
 - qutebrowser.app :: The url of the frontmost tab in the frontmost window
 
+You can also add grab handlers for other apps, just by updating ~org-mac-link-descriptors~, for instance:
+#+begin_src emacs-lisp
+;; Adds a handler for Microsoft Word documents (enabled by default, see `t') to front of grab menu
+(push '("W" "ord" my-word-handler t) org-mac-link-descriptors)
+#+end_src
+
 * Author
 Original authors are:
 - Anthony Lander <anthony.lander@gmail.com>
