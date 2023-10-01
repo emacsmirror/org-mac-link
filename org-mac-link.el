@@ -246,7 +246,7 @@ Do not escape spaces as the AppleScript call will quote this string."
 (defvar org-mac-link-descriptors
   `(("F" "inder" org-mac-link-finder-insert-selected org-mac-link-finder-app-p)
     ("m" "ail" org-mac-link-mail-insert-selected org-mac-link-mail-app-p)
-    ("d" "EVONthink Pro Office" org-mac-link-devonthink-item-insert-selected org-mac-link-devonthink-app-p)
+    ("d" "EVONthink" org-mac-link-devonthink-item-insert-selected org-mac-link-devonthink-app-p)
     ("o" "utlook" org-mac-link-outlook-message-insert-selected org-mac-link-outlook-app-p)
     ("a" "ddressbook" org-mac-link-addressbook-item-insert-selected org-mac-link-addressbook-app-p)
     ("s" "afari" org-mac-link-safari-insert-frontmost-url org-mac-link-safari-app-p)
