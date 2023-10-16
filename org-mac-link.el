@@ -51,6 +51,7 @@
 ;; Vimperator/Firefox.app - Grab the url of the frontmost tab in the frontmost window
 ;; Safari.app - Grab the url of the frontmost tab in the frontmost window
 ;; Google Chrome.app - Grab the url of the frontmost tab in the frontmost window
+;; Chromium.app - Grab the url of the frontmost tab in the frontmost window
 ;; Brave.app - Grab the url of the frontmost tab in the frontmost window
 ;; Together.app - Grab links to the selected items in the library list
 ;; Skim.app - Grab a link to the selected page in the topmost pdf document
@@ -160,6 +161,12 @@ Do not escape spaces as the AppleScript call will quote this string."
   :group 'org-mac-link
   :type 'boolean)
 
+(defcustom org-mac-link-chromium-app-p t
+  "Add menu option [C]hromium to grab links from Chromium.app."
+  :tag "Grab Chromium.app links"
+  :group 'org-mac-link
+  :type 'boolean)
+
 (defcustom org-mac-link-brave-app-p t
   "Add menu option [b]rave to grab links from Brave.app."
   :tag "Grab Brave.app links"
@@ -253,6 +260,7 @@ Do not escape spaces as the AppleScript call will quote this string."
     ("f" "irefox" org-mac-link-firefox-insert-frontmost-url org-mac-link-firefox-app-p)
     ("v" "imperator" org-mac-link-vimperator-insert-frontmost-url org-mac-link-firefox-vimperator-p)
     ("c" "hrome" org-mac-link-chrome-insert-frontmost-url org-mac-link-chrome-app-p)
+    ("C" "hromium" org-mac-link-chromium-insert-frontmost-url org-mac-link-chromium-app-p)
     ("b" "rave" org-mac-link-brave-insert-frontmost-url org-mac-link-brave-app-p)
     ("e" "evernote" org-mac-link-evernote-note-insert-selected org-mac-link-evernote-app-p)
     ("t" "ogether" org-mac-link-together-insert-selected org-mac-link-together-app-p)
@@ -465,6 +473,42 @@ The links are of the form <link>::split::<name>."
   "Insert the link to the frontmost window of the Chrome.app."
   (interactive)
   (insert (org-mac-link-chrome-get-frontmost-url)))
+
+
+
+;;; Handle links from Chromium.app
+;; Grab the frontmost url from Chromium. Same limitations as
+;; Firefox because Chrome doesn't publish an Applescript dictionary
+
+(defun org-mac-link-applescript-chromium-get-frontmost-url ()
+  "AppleScript to get the links to the frontmost window of the Chromium.app."
+  (let ((result
+         (org-mac-link-do-applescript
+          (concat
+           "set frontmostApplication to path to frontmost application\n"
+           "tell application \"Chromium\"\n"
+           "	set theUrl to get URL of active tab of first window\n"
+           "	set theResult to (get theUrl) & \"::split::\" & (get name of window 1)\n"
+           "end tell\n"
+           "activate application (frontmostApplication as text)\n"
+           "set links to {}\n"
+           "copy theResult to the end of links\n"
+           "return links as string\n"))))
+    (replace-regexp-in-string
+     "^\"\\|\"$" "" (car (split-string result "[\r\n]+" t)))))
+
+;;;###autoload
+(defun org-mac-link-chromium-get-frontmost-url ()
+  "Get the link to the frontmost window of the Chromium.app."
+  (interactive)
+  (message "Applescript: Getting Chromium url...")
+  (org-mac-link-paste-applescript-links (org-mac-link-applescript-chromium-get-frontmost-url)))
+
+;;;###autoload
+(defun org-mac-link-chromium-insert-frontmost-url ()
+  "Insert the link to the frontmost window of the Chromium.app."
+  (interactive)
+  (insert (org-mac-link-chromium-get-frontmost-url)))
 
 
 

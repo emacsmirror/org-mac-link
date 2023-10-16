@@ -22,6 +22,7 @@ Please see the commits on the [[https://gitlab.com/aimebertrand/org-mac-link][Gi
 - Vimperator/Firefox.app :: The url of the frontmost tab in the frontmost window
 - Safari.app :: The url of the frontmost tab in the frontmost window
 - Google Chrome.app :: The url of the frontmost tab in the frontmost window
+- Chromium.app :: The url of the frontmost tab in the frontmost window
 - Brave.app :: The url of the frontmost tab in the frontmost window
 - Together.app :: Links to the selected items in the library list
 - Skim.app :: A link to the selected page in the topmost pdf document
